@@ -1,6 +1,3 @@
-Sure! Here's a sample `README.md` for your project that outlines its purpose, setup instructions, and usage:
-
-```markdown
 # Automated AI News Website
 
 ## Overview
