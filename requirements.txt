@@ -6,3 +6,4 @@ transformers
 feedparser
 flask_sqlalchemy
 openai
+google-generativeai

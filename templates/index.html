@@ -84,7 +84,7 @@
                 <img src="https://picsum.photos/400/200" alt="News Image" class="w-full h-48 object-cover">
                 <div class="p-4">
                     <h3 class="text-xl font-semibold mb-2">{{article.title}}</h3>
-                    <p class="text-gray-300">{{article.preview[:50]}}...</p>
+                    <p class="text-gray-300">{{ article.preview[:50] if article.preview else 'No preview available' }}...</p>
                     <a href="/article/{{article.id}}" class="text-purple-300 mt-4 inline-block">Read more →</a>
                 </div>
             </div>

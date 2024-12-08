@@ -1,5 +1,5 @@
 import requests
-from openai import AzureOpenAI
+# from openai import AzureOpenAI
 from typing import Dict, List
 import feedparser
 from bs4 import BeautifulSoup
@@ -8,17 +8,21 @@ import time
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import hashlib
-import re
+import google.generativeai as genai
+import re, os
 
 class MainApp:
     def __init__(self, rss_url='https://techcrunch.com/feed/'):
         # OpenAI Client Setup
-        self.client = AzureOpenAI(
-            api_key="OPEN-AI API KEY",
-            api_version="2024-02-15-preview",
-            azure_endpoint="add azure if you use it"
-        )
-
+        # self.client = AzureOpenAI(
+        #     api_key="OPEN-AI API KEY",
+        #     api_version="2024-02-15-preview",
+        #     azure_endpoint="add azure if you use it"
+        # )
+                
+        os.environ['GOOGLE_API_KEY'] = 'API for gemini 1.5 flash' # like that AIWSSyAnBbyM1-LdeJfNsb6WzYhrqFiOK75Bzic 
+        genai.configure(api_key=os.environ['GOOGLE_API_KEY'])
+        self.model = genai.GenerativeModel('gemini-1.5-flash')
 
         # Web Scraping Setup
         self.user_agents = [
@@ -122,74 +126,126 @@ class MainApp:
 
     def rewrite_article(self, article: Dict) -> Dict:
         try:
-            response = self.client.chat.completions.create(
-                    model="gpt-4o",
-                    messages=[
-                                {
-                                    "role": "system",
-                                    "content": (
-                                        "You are a direct, no-BS tech expert who focuses on practical value and results. "
-                                        "Add citations and references to help non-technical readers understand easily.\n\n"
-                                        "Writing Style Rules:\n"
-                                        "1) Use specific numbers/metrics\n"
-                                        "2) Focus on actionable insights\n"
-                                        "3) Include citations and expert references\n"
-                                        "4) Add a P.S. \n"
-                                        "5) Add links to the references if you think its good\n\n"
-                                        "Content Guidelines:\n"
-                                        "- Use conversational, simple language (7th grade level)\n"
-                                        "- Write short, punchy sentences\n"
-                                        "- Include analogies and examples\n"
-                                        "- Use personal anecdotes where relevant\n"
-                                        "- Add bullet points for key information\n"
-                                        "- Split long sentences for readability\n"
-                                        "- Use bold/italic for emphasis\n"
-                                        "- Avoid jargon and promotional language\n\n"
-                                        "Tone: Confident but friendly, using phrases like 'Here's the deal:', 'Straight up:', 'Zero fluff'\n\n"
-                                        "\n\nGenerate articles using this exact HTML/Tailwind CSS template:"
-                                        "\n<article class='max-w-4xl mx-auto px-6 py-8'>"
-                                        "\n  <div class='mb-8'>"
-                                        "\n    <h2 class='text-3xl font-bold text-purple-300 mb-4'>{{article.title}}</h2>"
-                                        "\n    <div class='flex justify-between items-center text-gray-400 border-b border-gray-700 pb-4'>"
-                                        "\n      <span class='text-sm'>{{article.date}}</span>"
-                                        "\n    </div>"
-                                        "\n  </div>"
-                                        "\n  <div class='prose prose-invert max-w-none'>"
-                                        "\n    <div class='text-gray-300 leading-relaxed space-y-6'>"
-                                        "\n      [CONTENT HERE - Use the following components:]"
-                                        "\n      <!-- Paragraphs -->"
-                                        "\n      <p class='text-gray-300 mb-4'></p>"
-                                        "\n      <!-- Subheadings -->"
-                                        "\n      <h3 class='text-xl font-semibold text-purple-200 mt-8 mb-4'></h3>"
-                                        "\n      <!-- Lists -->"
-                                        "\n      <ul class='list-disc ml-6 space-y-2 text-gray-300'>"
-                                        "\n        <li></li>"
-                                        "\n      </ul>"
-                                        "\n      <!-- Quotes -->"
-                                        "\n      <blockquote class='border-l-4 border-purple-400 pl-4 my-6 italic text-gray-400'></blockquote>"
-                                        "\n      <!-- Important text -->"
-                                        "\n      <span class='text-purple-300 font-medium'></span>"
-                                        "\n    </div>"
-                                        "\n  </div>"
-                                        "\n</article>"
-                                        + "\n\n[Rest of your existing writing style guidelines...]"
-                                    )
-                                },
-                                {
-                                    "role": "user",
-                                    "content": (
-                                        f"Rewrite this tech article in your style: \n\n{article['content']}"
-                                    ),
-                                }
-                            ],
-                    temperature=0.7,
-                    top_p=1,
-                    frequency_penalty=0.2,
-                    presence_penalty=0.1,
-                )    
+            response = self.model.generate_content(["""
+"You are a direct, no-BS tech expert who focuses on practical value and results. "
+"Add citations and references to help non-technical readers understand easily.\n\n"
+"Writing Style Rules:\n"
+"1) Use specific numbers/metrics\n"
+"2) Focus on actionable insights\n"
+"3) Include citations and expert references\n"
+"4) Add a P.S. \n"
+"5) Add links to the references if you think its good\n\n"
+"Content Guidelines:\n"
+"- Use conversational, simple language (7th grade level)\n"
+"- Write short, punchy sentences\n"
+"- Include analogies and examples\n"
+"- Use personal anecdotes where relevant\n"
+"- Add bullet points for key information\n"
+"- Split long sentences for readability\n"
+"- Use bold/italic for emphasis\n"
+"- Avoid jargon and promotional language\n\n"
+"Tone: Confident but friendly, using phrases like 'Here's the deal:', 'Straight up:', 'Zero fluff'\n\n"
+"\n\nGenerate articles using this exact HTML/Tailwind CSS template:"
+"\n<article class='max-w-4xl mx-auto px-6 py-8'>"
+"\n  <div class='mb-8'>"
+"\n    <h2 class='text-3xl font-bold text-purple-300 mb-4'>{{article.title}}</h2>"
+"\n    <div class='flex justify-between items-center text-gray-400 border-b border-gray-700 pb-4'>"
+"\n      <span class='text-sm'>{{article.date}}</span>"
+"\n    </div>"
+"\n  </div>"
+"\n  <div class='prose prose-invert max-w-none'>"
+"\n    <div class='text-gray-300 leading-relaxed space-y-6'>"
+"\n      [CONTENT HERE - Use the following components:]"
+"\n      <!-- Paragraphs -->"
+"\n      <p class='text-gray-300 mb-4'></p>"
+"\n      <!-- Subheadings -->"
+"\n      <h3 class='text-xl font-semibold text-purple-200 mt-8 mb-4'></h3>"
+"\n      <!-- Lists -->"
+"\n      <ul class='list-disc ml-6 space-y-2 text-gray-300'>"
+"\n        <li></li>"
+"\n      </ul>"
+"\n      <!-- Quotes -->"
+"\n      <blockquote class='border-l-4 border-purple-400 pl-4 my-6 italic text-gray-400'></blockquote>"
+"\n      <!-- Important text -->"
+"\n      <span class='text-purple-300 font-medium'></span>"
+"\n    </div>"
+"\n  </div>"
+"\n</article>"
++ "\n\n[Rest of your existing writing style guidelines...]"
+""", f"Rewrite this tech article in your style: \n\n{article['content']}"])
+            print(response)
+            if hasattr(response, 'text'):
+                # Extracted text from the image
+                rewritten_content = response.text
+                
+            # response = self.client.chat.completions.create(
+            #         model="gpt-4o",
+            #         messages=[
+            #                     {
+            #                         "role": "system",
+            #                         "content": (
+            #                             "You are a direct, no-BS tech expert who focuses on practical value and results. "
+            #                             "Add citations and references to help non-technical readers understand easily.\n\n"
+            #                             "Writing Style Rules:\n"
+            #                             "1) Use specific numbers/metrics\n"
+            #                             "2) Focus on actionable insights\n"
+            #                             "3) Include citations and expert references\n"
+            #                             "4) Add a P.S. \n"
+            #                             "5) Add links to the references if you think its good\n\n"
+            #                             "Content Guidelines:\n"
+            #                             "- Use conversational, simple language (7th grade level)\n"
+            #                             "- Write short, punchy sentences\n"
+            #                             "- Include analogies and examples\n"
+            #                             "- Use personal anecdotes where relevant\n"
+            #                             "- Add bullet points for key information\n"
+            #                             "- Split long sentences for readability\n"
+            #                             "- Use bold/italic for emphasis\n"
+            #                             "- Avoid jargon and promotional language\n\n"
+            #                             "Tone: Confident but friendly, using phrases like 'Here's the deal:', 'Straight up:', 'Zero fluff'\n\n"
+            #                             "\n\nGenerate articles using this exact HTML/Tailwind CSS template:"
+            #                             "\n<article class='max-w-4xl mx-auto px-6 py-8'>"
+            #                             "\n  <div class='mb-8'>"
+            #                             "\n    <h2 class='text-3xl font-bold text-purple-300 mb-4'>{{article.title}}</h2>"
+            #                             "\n    <div class='flex justify-between items-center text-gray-400 border-b border-gray-700 pb-4'>"
+            #                             "\n      <span class='text-sm'>{{article.date}}</span>"
+            #                             "\n    </div>"
+            #                             "\n  </div>"
+            #                             "\n  <div class='prose prose-invert max-w-none'>"
+            #                             "\n    <div class='text-gray-300 leading-relaxed space-y-6'>"
+            #                             "\n      [CONTENT HERE - Use the following components:]"
+            #                             "\n      <!-- Paragraphs -->"
+            #                             "\n      <p class='text-gray-300 mb-4'></p>"
+            #                             "\n      <!-- Subheadings -->"
+            #                             "\n      <h3 class='text-xl font-semibold text-purple-200 mt-8 mb-4'></h3>"
+            #                             "\n      <!-- Lists -->"
+            #                             "\n      <ul class='list-disc ml-6 space-y-2 text-gray-300'>"
+            #                             "\n        <li></li>"
+            #                             "\n      </ul>"
+            #                             "\n      <!-- Quotes -->"
+            #                             "\n      <blockquote class='border-l-4 border-purple-400 pl-4 my-6 italic text-gray-400'></blockquote>"
+            #                             "\n      <!-- Important text -->"
+            #                             "\n      <span class='text-purple-300 font-medium'></span>"
+            #                             "\n    </div>"
+            #                             "\n  </div>"
+            #                             "\n</article>"
+            #                             + "\n\n[Rest of your existing writing style guidelines...]"
+            #                         )
+            #                     },
+            #                     {
+            #                         "role": "user",
+            #                         "content": (
+            #                             f"Rewrite this tech article in your style: \n\n{article['content']}"
+            #                         ),
+            #                     }
+            #                 ],
+            #         temperature=0.7,
+            #         top_p=1,
+            #         frequency_penalty=0.2,
+            #         presence_penalty=0.1,
+            #     )    
             
-            rewritten_content = response.choices[0].message.content.strip()
-            # Remove 'html' prefix if present
+            # rewritten_content = response.choices[0].message.content.strip()
+            # # Remove 'html' prefix if present
             rewritten_content = re.sub(r'^(?:html|```html|```)\s*', '', rewritten_content, flags=re.IGNORECASE)
 
             return {
