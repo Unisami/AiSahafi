@@ -1,0 +1,8 @@
+Flask
+beautifulsoup4
+requests
+SQLAlchemy
+transformers
+feedparser
+flask_sqlalchemy
+openai

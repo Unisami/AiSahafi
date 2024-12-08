@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIJournalist - Business Articles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#121620] text-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-3">
+        <div class="flex justify-between items-center">
+            <a href="/" class="text-xl font-bold text-purple-300">AIJournalist</a>
+
+
+            <div class="hidden md:flex space-x-8">
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <header class="mb-10">
+            <h1 class="text-3xl font-bold text-purple-300 mb-4">Business & Tech</h1>
+            <p class="text-gray-400 mb-6">Business & Tech is the future, and the future is now.</p>
+        </header>
+
+        <div class="space-y-6">
+            {% for article in articles %}
+            <article class="bg-[#2a2f3c]/60 rounded-lg p-6 hover:bg-[#2a2f3c]/80 transition duration-300 group">
+                <div class="flex items-start">
+                    <div class="flex-grow">
+                        <h2 class="text-xl font-semibold text-purple-300 mb-2 group-hover:text-purple-200">
+                            {{article.title}}
+                        </h2>
+                        <p class="text-gray-300 mb-3">
+                            {{article.preview[:100]}}...
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">Published: {{article.date}}</span>
+                            <a href="/article/{{article.id}}" class="text-purple-300 hover:text-purple-200 transition">
+                                Read Full Article →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        {% endfor %}
+        </div>
+
+    </div>
+</body>
+</html>

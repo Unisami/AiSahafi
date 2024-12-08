@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIJournalist - Full Article</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <div class="max-w-7xl mx-auto px-4 py-3">
+        <div class="flex justify-between items-center">
+            <a href="/" class="text-xl font-bold text-purple-300">AIJournalist</a>
+
+
+            <div class="hidden md:flex space-x-8">
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <article class="bg-gray-800 shadow-xl rounded-lg p-8">
+            <header class="mb-10">
+                <!-- <h1 class="text-3xl font-bold text-purple-300 mb-4">{{article.title}}</h1>
+                <div class="flex justify-between items-center text-gray-400 border-b border-gray-700 pb-4 mb-6">
+                    <div class="flex items-center space-x-4">
+                        <span>{{article.author}}</span>
+                    </div>
+                    <time datetime="2024-06-15" class="text-sm">{{article.date}}</time>
+                </div> -->
+            </header>
+<!-- 
+            <section class="prose max-w-none">
+                
+            </section> -->
+
+            {{article.content|safe}}
+
+            <footer class="mt-10 pt-6 border-t border-gray-700">
+                <div class="flex justify-between items-center">
+                    <div class="flex space-x-2">
+                        <span class="text-gray-500">Tags:</span>
+                        <span class="bg-purple-900 text-purple-300 px-2 py-1 rounded-full text-xs">AI</span>
+                        <span class="bg-purple-900 text-purple-300 px-2 py-1 rounded-full text-xs">Technology</span>
+                        <span class="bg-purple-900 text-purple-300 px-2 py-1 rounded-full text-xs">Innovation</span>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-purple-300 hover:text-purple-200 transition">
+                            Share on Twitter
+                        </a>
+                        <a href="#" class="text-purple-300 hover:text-purple-200 transition">
+                            Share on LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </footer>
+        </article>
+
+
+    </main>
+
+    <footer class="bg-gray-800 py-6 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500">
+            © 2024 AIJournalist. All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>

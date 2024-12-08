@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIJournalist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .dot {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(-50px); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+        }
+        .loader-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #1a1f2c;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+    }
+    .loader {
+        width: 60px;
+        height: 60px;
+        border: 5px solid #ffffff20;
+        border-top: 5px solid #9f7aea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-[#1a1f2c] to-[#2d1b30] text-gray-100 min-h-screen">
+    <div class="animated-background" id="dots"></div>
+
+    <!-- Navigation -->
+    <nav class="bg-[#2a2f3c]/80 backdrop-blur-md shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-xl font-bold text-purple-300">AIJournalist</a>
+                <div class="hidden md:flex space-x-8">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="max-w-7xl mx-auto px-4 py-8">
+        <div class="bg-[#2a2f3c]/80 backdrop-blur-md rounded-lg p-6 shadow-xl">
+            <h1 class="text-4xl font-bold text-purple-300 mb-4">AI Journalist</h1>
+            <p class="text-gray-300">Stay informed with the latest updates from around the world, with help of AI.</p>
+            <a href="/all" class="bg-purple-300 text-gray-900 px-4 py-2 mt-4 inline-block rounded-lg">See All News</a>
+        </div>
+    </header>
+
+    <section class="max-w-7xl mx-auto px-4 py-8">
+        <h2 class="text-2xl font-bold mb-6 text-purple-300">Latest News</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+        {% for article in articles %}
+
+            <div class="bg-[#2a2f3c]/80 backdrop-blur-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <img src="https://picsum.photos/400/200" alt="News Image" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-xl font-semibold mb-2">{{article.title}}</h3>
+                    <p class="text-gray-300">{{article.preview[:50]}}...</p>
+                    <a href="/article/{{article.id}}" class="text-purple-300 mt-4 inline-block">Read more →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer class="bg-[#2a2f3c]/80 backdrop-blur-md mt-8"></footer>
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="text-center text-purple-300">
+                <p>&copy; 2024 AIJournalist. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="loader-wrapper" id="loader">
+        <div class="loader"></div>
+    </div>
+    <script>
+        function createDots() {
+            const container = document.getElementById('dots');
+            for (let i = 0; i < 50; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.width = Math.random() * 4 + 'px';
+                dot.style.height = dot.style.width;
+                dot.style.left = Math.random() * 100 + 'vw';
+                dot.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(dot);
+            }
+        }
+        createDots();
+        window.addEventListener('load', () => {
+        const loader = document.getElementById('loader');
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 500);
+    });
+    </script>
+</body>
+</html>
