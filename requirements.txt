@@ -4,5 +4,6 @@ requests
 SQLAlchemy
 transformers
 feedparser
-flask_sqlalchemy
-openai
+APScheduler==3.10.1
+pytz
+python-dotenv  # For managing environment variables
