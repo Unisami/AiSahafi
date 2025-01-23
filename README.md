@@ -6,18 +6,37 @@ The Automated AI News Website is a fully automated platform that scrapes and agg
 
 ## Features
 
-- **News Aggregation**: Automatically fetches articles from trusted news sources.
-- **Content Rewriting**: Utilizes AI to rewrite articles in a personalized style.
-- **SEO Optimization**: Automatically adds relevant SEO keywords to improve search visibility.
-- **Automated Publishing**: Uploads articles to the website without manual intervention.
+- **News Aggregation**: Automatically fetches articles from trusted news sources
+- **Content Rewriting**: Utilizes DeepSeek AI to rewrite articles in a personalized style
+- **SEO Optimization**: Automatically adds relevant SEO keywords to improve search visibility
+- **Automated Publishing**: Uploads articles to WordPress without manual intervention
+- **Image Integration**: Automatically fetches relevant images from Pexels
+- **Category Management**: Smart categorization of articles into AI, Tech, Business, or Mix
+- **Duplicate Prevention**: Uses MD5 hashing to prevent duplicate articles
+- **Modern UI**: Responsive design with Tailwind CSS and animated backgrounds
 
 ## Technologies Used
 
-- Python
-- Beautiful Soup (for web scraping)
-- TechCrunch (for fetching news articles)
-- Feedparser (for parsing RSS feeds)
-- A custom AI model for content rewriting (e.g., OpenAI GPT)
+### Backend
+- Python 3.11+
+- Flask (Web Framework)
+- SQLAlchemy (Database ORM)
+- Beautiful Soup (Web Scraping)
+- Feedparser (RSS Feed Parsing)
+
+### Frontend
+- HTML5
+- Tailwind CSS
+- JavaScript (Animations & Loading States)
+
+### APIs & Services
+- DeepSeek API (Content Generation)
+- Pexels API (Image Integration)
+- WordPress REST API (Content Management)
+- TechCrunch RSS Feed (News Source)
+
+### Database
+- SQLite (Local Development)
 
 ## Getting Started
 
@@ -25,46 +44,67 @@ The Automated AI News Website is a fully automated platform that scrapes and agg
 
 - Python 3.11 or higher
 - Pip (Python package installer)
-- An API key from OpenAI
+- WordPress installation with REST API enabled
+- API keys for:
+  - DeepSeek
+  - Pexels
+  - WordPress credentials
 
 ### Installation
 
 1. **Clone the repository**:
-
    ```bash
    git clone https://github.com/Unisami/AiSahafi
    cd AiSahafi
    ```
 
 2. **Install the required packages**:
-
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Set up your API key**:
-   - go to main.py and setup your openai API
+3. **Environment Setup**:
+   Create a `.env` file in the root directory with the following variables:
+   ```env
+   WP_API_URL=your_wordpress_api_url
+   WP_USERNAME=your_wordpress_username
+   WP_PASSWORD=your_wordpress_password
+   DEEPSEEK_API_KEY=your_deepseek_api_key
+   PEXELS_API_KEY=your_pexels_api_key
+   ```
 
 ### Usage
 
 1. **Start the Flask Server**:
-   - You can start the Flask server by running:
-
    ```bash
    python app.py
    ```
+   This will start the web interface on `http://localhost:5000`
 
-2. **Run the content scraping, rewriting and uploading script by running:**:
-   - It will scrape, rewrite and upload all the new articles onto the site:
-
+2. **Run the Content Pipeline**:
    ```bash
    python main.py
    ```
+   This will:
+   - Fetch latest articles from TechCrunch
+   - Rewrite content using DeepSeek AI
+   - Add relevant images from Pexels
+   - Publish to WordPress
+   - Update the local database
 
+## Project Structure
 
-### Customization
-
-- You can customize the keywords used for scraping and the AI rewriting styles by modifying.
+AiSahafi/
+├── app.py              # Flask application
+├── main.py            # Content processing pipeline
+├── config.py          # Configuration management
+├── requirements.txt   # Python dependencies
+├── hash-logs.txt     # Duplicate prevention logs
+├── templates/        # HTML templates
+│   ├── index.html    # Homepage template
+│   ├── all.html      # All articles page
+│   └── article.html  # Single article page
+└── static/           # Static assets
 
 ## Contributing
 
